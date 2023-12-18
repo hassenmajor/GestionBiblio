@@ -1,20 +1,21 @@
 package projet.liu.cli;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
+import projet.liu.dao.AuteurDao;
+import projet.liu.dao.BibliothequeDao;
+import projet.liu.dao.LivreDao;
+import projet.liu.dao.TelephoneDao;
 import projet.liu.gui.ViewCRUD;
-import projet.liu.metier.*;
-import projet.liu.dao.*;
+import projet.liu.metier.Auteur;
+import projet.liu.metier.Bibliotheque;
+import projet.liu.metier.Livre;
+import projet.liu.metier.Telephone;
 
 public class Controller {
 	
@@ -160,14 +161,16 @@ public class Controller {
 		// TODO Auto-generated method stub
 		if (viewCRUD.listLivre.getSelectedIndex()>=livres.size()) return;
 		//
-		livre.setTitre(viewCRUD.textTitre.getText());
-		livre.setISBN(Integer.parseInt(viewCRUD.textISBN.getText()));
-		new LivreDao().update(livre, new String[] {""+livre.getISBN(), livre.getTitre()});
+		String[] livre = {viewCRUD.textISBN.getText(), viewCRUD.textTitre.getText()};
+		new LivreDao().update(Controller.livre, livre);
+		Controller.livre.setISBN(Integer.parseInt(livre[0]));
+		Controller.livre.setTitre(livre[1]);
 		//
 		if (tel!=null && viewCRUD.checkTelephone.isSelected()) {
-			tel.setNumero(Integer.parseInt(viewCRUD.textNumero.getText()));
-			tel.setType(viewCRUD.comboType.getSelectedItem().toString());
-			new TelephoneDao().update(tel, new String[] {""+tel.getNumero(), tel.getType()});
+			String[] tel = {""+Integer.parseInt(viewCRUD.textNumero.getText()), viewCRUD.comboType.getSelectedItem().toString()};
+			new TelephoneDao().update(Controller.tel, tel);
+			Controller.tel.setNumero((Integer.parseInt(tel[0])));
+			Controller.tel.setType(tel[1]);
 		} else if (tel!=null && !viewCRUD.checkTelephone.isSelected()) {
 			tels.remove(tel);
 			new TelephoneDao().delete(tel);
@@ -179,10 +182,11 @@ public class Controller {
 			new TelephoneDao().save(tel);
 		}
 		//
-		auteur.setNom(viewCRUD.textNom.getText());
-		auteur.setAdresse(viewCRUD.textAdresse.getText());
-		auteur.setRegion(viewCRUD.textRegion.getText());
-		new AuteurDao().update(auteur, new String[] {auteur.getNom(), auteur.getAdresse(), auteur.getRegion()});
+		String[] auteur = {viewCRUD.textNom.getText(), viewCRUD.textAdresse.getText(), viewCRUD.textRegion.getText()};
+		new AuteurDao().update(Controller.auteur, auteur);
+		Controller.auteur.setNom(auteur[0]);
+		Controller.auteur.setAdresse(auteur[1]);
+		Controller.auteur.setRegion(auteur[2]);
 		//
 		viewCRUD.listLivre.updateUI();
 	}
